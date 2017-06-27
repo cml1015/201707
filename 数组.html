@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //  用[]包起来的一组数据就叫做数组
+    //  索引   length
+    //  遍历循环, 是利用我们的for循环,实现数组的遍历
+
+    //  数组公有方法
+    //  我们任何一个数组都可以调用,存在Array类的原型prototype上的共有方法,因为每一个数组都是Array数组类的一个实例;(做了解,这是我们正式课第一周面向对象思想讲的);
+
+    //  数组的 增删改查;
+    //  数组的 循环遍历
+    //  数组的 转换成字符串
+
+    // 数组的增删改查
+    // 增           作用              返回值        对原数组的影响
+
+    // push  向数组末尾增加项      新数组的长度         改变
+    // var ary = [1, 2, 3];
+    // var res = ary.push('a', 'b', 'c');
+    //console.log(ary, res);// 原数组 , 返回值
+    // 小技巧
+    // ary[ary.length] = 'd';
+    // console.log(ary)
+
+    // unshift   向数组的开头增加项   新数组长度        改变
+    // var ary = [1,2,3];
+    // var res = ary.unshift(0);
+    // console.log(ary, res);
+
+    // pop       删除末尾项          删除的末尾项       改变
+    // var ary = [1, 2, 'a','b', 'c'];
+    // var res = ary.pop();
+    // console.log(ary, res);
+    // 小技巧 利用我们数组的length属性实现我们的删除数组末尾项
+    // ary.length-=1; ary.length = ary.length - 1; ary.length--;
+    // ary.length--;
+    // console.log(ary);
+    // shift     删除数组开头项      删除项             改变
+    // var ary  = [1,2,3];
+    // var res  = ary.shift();
+    // console.log(ary,res);
+    // splice    对数组进行裁剪      裁剪项组成新数组   改变
+
+    // 语法: ary.splice(裁剪处索引, 裁剪多少项, 裁剪项用什么替代)
+
+    // 例子: 三个参数,完整例子
+    // var ary = [1, 2, 3, 4, 5, 6, 7];
+    //var res = ary.splice(3,1); // 删除末尾项 ary.splice(ary.length-1,1)
+    //var res = ary.splice(3); // 删除末尾项  ary.splice(ary.length-1)
+    // var res = ary.splice(ary.length,0,'a'); // 末尾添加
+    // var res = ary.splice(0,0,'开始项'); // 开头增加
+
+    // 中间项的替换和添加
+    // 替换(改)
+    // var res = ary.splice(3,1,'a'); // 1项 删除替换1项
+    // var res = ary.splice(3,2,'c','d'); // 删除替换多项
+    // 增加
+    // var ary = [1, 2, 3, 5, 6];
+    // var res = ary.splice(1,0,'我','是','二'); // 增加是向当前裁剪的索引前边进行增加的
+    // var res = ary.splice(3, 0, 4);
+    // console.log(ary, res);
+    // 克隆
+    //    var ary = [1,2,3];
+    //    var res = ary.splice(0,ary.length);
+    //    console.log(ary, res);
+
+    // 查 slice（n,m）查找索引n开始到索引m项之前
+    // 语法： slice（开始处的索引，结束处的索引，但是不包含当前结束处索引项）
+    // var ary = [1,2,3,4];
+    //var res = ary.slice(1,3);
+    // console.log(ary,res)// 在slice查找中，我们对原有数组不发生改变，slice函数的返回值，是有查找到的每一项组成的新数组；
+    // 只传一个参数
+    // var res = ary.slice(0); // 将数组复制一份
+    // var res = ary.slice(1); // 返回的数组，相当于删除开头项
+    // var res = ary.slice(0,ary.length-1); // 返回的数组，相当于删除末尾项
+    // var ary = [1,2,3];
+    // var res = ary.slice(0,ary.length);// 克隆数组
+    // console.log(ary, res);
+    // 从索引n开始，查找到索引m之前
+    // 从第n项，索引对应（n-1），查找到第m项（m-1）,要包含m项，索引对应（m）
+
+    // 数组合并 concat   合并数组     合并后新数组    元数组不改变
+    // var ary = [1,2,3,4];
+    // ary.concat() 我们可以传一项，或者多项内容，内容的数据类型可以是任意的，如果是数组的话的，就相当于将两个数组合并，如果不是数的话，就相当于在原数组末尾增加; 在操作中元数组不会改变，返回值是合并后的新数组；
+    // var res = ary.concat([4,5,6]);
+    // var res = ary.concat(4,5,'A'); // 如果实参，不是数组，就是向末尾追加
+    // var res = ary.concat();//什么都不传，相当于将原有数组克隆；
+    // var res = ary.splice(); // 创建一个空数组，返回一个数组实例
+    // var res = ary.slice(); // 和concat效果一样 也相当于克隆数组
+    // var res = ary,concat( 'a',[1,2,3] ,{name:'珠峰'}) 将多项合并
+
+    // 数组的拆分转化成字符串
+    // join  原有数组不变，返回结果是以指定分隔符分隔后的字符串，如果不添加制定分隔符，默认是以逗号进行分隔
+    //    var ary = [10,11,12];
+    //    // var res = ary.join('#'); // 必须以字符串的形式传进去
+    //    var res = ary.toString();// 直接将数组转化成字符串,调用的是对象原型上的方法
+    //    console.log(ary, res);
+    // 查找数组中的某一项
+    // indexOf() lastIndexOf()
+
+    // var ary = ['a','a','b','c'];
+    // var res = ary.indexOf('a'); // 得到返回值是，从索引0开始，查找项，在数组中第一次出现的位置索引；
+    // var res = ary.lastIndexOf('a');// 得到返回值是，从末尾索引开始，查找项，在数组中第一次出现的位置索引；
+    // console.log(ary, res);
+
+    // 数组的遍历
+    // 查找数组中每一项
+    // 1、foreach 2、map
+    //var ary = [1, 2, 5, 7, 3, 6, 4];
+    // 格式 ary.forEach(回调函数)
+    //    ary.forEach(function (查找到的具体每一项, 每一项的索引) {
+    //        console.log(n, m)
+    //    })
+    // var res = ary.forEach(function (item, i) {
+
+    // });
+    // sort 对数组进行排序  原有数组进行排序，我们的返回值也是排好序的数组
+    // 通过我们形参，a b进行比较，来时实现的排序；a b代表的是我们数组的每一项，那么也就是拿回调函数中数组的每一项比较的返回值给sort方法，再进行实质的
+    //console.log(ary);
+    //    var res = ary.sort(function (a, b) {
+    //       // return a - b; // a - b 是把每一项拿出来比较获得一个从小到大的数组
+    //        return b - a; // b - a，从大到小的数组
+    //    });
+    //    var res = ary.sort(); // 我们的sort方法如果直接调用不传回调函数的情况下，是只会对10以内的数字进行正常从小到大的排序，因为他是根据我们ascII编码进行排序的
+
+    //    var ary = ['az', 'ec', 'de', 'bc', 'ao'];
+    //    ary.sort();
+
+
+    // map：对数组中每一项进行遍历，可以每一项都做修改;然后将加工后的每一项，组合成一个新的数组返回来；我们原数组不改变
+
+
+    // 格式：
+    //    ary.map(function (item) {
+    //        // 在函数内部访问到的item，其实就是我们数组中的每一项
+    //    })
+    //    var ary = [1, 2, 3, 4];
+    //    var res = ary.map(function (item) {
+    //        console.log(item);
+    //        //  需要返回值，对每一项做修改，并且将修改后的结果返回出去
+    //        return item + 'a'
+    //    });
+    //    console.log(ary, res)
+
+    var ary = [4, 1, 3, 2, 5];
+    // 我们现在要一个每一项数据是ary5倍的数组
+    // 将ary的每一项拿出乘以5倍，然后返回出来
+    //    var  res = ary.map(function (item) {
+    //        return item / 10
+    //    });
+    //    console.log(ary,res);
+
+    // 颠倒倒置数组  将数组的倒置排列     不排序   原数组改变  返回结果是倒置后的新数组
+    // var res = ary.reverse();
+    // console.log(ary, res)
+
+
+    var ary = [{name: 'Bob', age: 23}, {name: 'Tom', age: 31}, {name: 'Lily', age: 13}, {
+        name: 'Nao',
+        age: 32
+    }, {name: 'Bim', age: 26}];
+    // 五个人的用户信息，把当前5个人组成的数组进行排序，以年龄的大小进行排
+
+    var  res = ary.sort(function (a, b) {
+        // console.log(a,b);
+        return a.age - b.age;  // a.age > b.age  a b 就交换位置，结果是
+    });
+    console.log(ary,res)
+
+
+</script>
