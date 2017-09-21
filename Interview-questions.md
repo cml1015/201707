@@ -550,14 +550,98 @@ btn.addEventListener("click",function(){
 ```
 
 ### 12.javascript 模版引擎用过哪些？实现原理是什么？
+
 ### 13.合并两个对象
+
 ### 14.动态向一个div中插入1000个div标签，如何实现？（考性能）
+
 ### 15.html5新特性
+
+1. 语义特性（Semantic）
+2. 本地存储特性（OFFLINE & STORAGE）
+3. 设备访问特性 (DEVICE ACCESS)
+4. 连接特性（CONNECTIVITY）
+5. 网页多媒体特性(MULTIMEDIA)
+    - 支持网页端的Audio、Video等多媒体功能， 与网站自带的APPS，摄像头，影音功能相得益彰。
+6. 三维、图形及特效特性（3D, Graphics & Effects)于SVG、Canvas、WebGL及CSS3的3D功能
+7.  性能与集成特性（Performance & Integration）
+    - HTML5会通过XMLHttpRequest2等技术，解决以前的跨域等问题，帮助您的Web应用和网站在多样化的环境中更快速的工作。
+
 ### 16.严格模式和非严格模式的区别
+
+
+| 严格模式      |    非严格模式 |
+| :-------- | :--------|
+| 禁止使用with语句  | 允许使用with语句 |
+| 所有变量要先声明     |   使用未声明的变量将隐式声明为全局变量 |
+| 函数(非方法)中的this是undefined      |    this是全局对象 |
+|call()和apply()传入的第一个值不会被转换|call()和apply()传入的第一个值如果是null和undefined，则会被全局对象取代，如果是原始值则转换为对应的包装对象|
+|给只读属性和不可扩展的对象创建新成员将抛出类型错误异常|只是简单的操作失败|
+|传入eval()的代码不能在定义变量和函数|变量和函数定义在eval()创建的新作用域中|
+|函数中的arguments对象拥有传入函数值的静态副本||
+|delete后跟非法标识符将抛出语法错误异常|只是简单的返回false|
+|delete删除不可配置的属性将抛出类型错误异常|只是简单的返回false|
+|在对象直接量中定义多个同名属性将产生语法错误|不会报错|
+|函数声明存在多个同名的参数将产生语法错误|不会报错|
+|不允许使用八进制直接量|某些实现是允许的|
+|eval和arguments当作关键字，并且不允许更改||
+|限制了对栈的检测能力，arguments.caller和arguments.callee将抛出类型错误异常||
+
 ### 17.对于js中浮点数计算会丢失精度的问题，你有什么解决思路？
 
+# JQuery
+
+## jquery.extend , jquery.fn.extend的区别
+
+## 谈一下jquery中的bind，live，delegate，on区别
+
+## document.ready和document.load和$(function(){})有什么区别？
+
+## $.data()和$('#aaa').data()各自作用是什么？有什么区别
 
 
+# ES6
+
+## 1.什么时候应该用箭头函数？什么时候不能用？ － 请写出ES6中Array.isArray()的实现代码
+
+## 2.如何在项目中解析处理es6和es7代码
+
+## 3.Promise常用方法，Promise.race的作用，then方法里reject和catch的区别
+
+
+# 工程化
+
+## 1.什么叫模块化？你用过哪些模块化解决方案？
+
+## 2.什么叫组件化？你在工作中是如何实现组件化的？
+
+## 3.gulp和webpack的相同点和不同点?
+
+## 4.什么是热加载?
+
+
+
+# 框架
+
+## 1.前端路由的实现原理
+
+## 2.MVVM框架解决了什么问题？带来了什么问题？
+
+## 3.浏览器地址栏里面的'＃' 如何清楚？mode共有几个参数，参数有什么区别？
+
+## 4.vue中父组件如何给子组件传递值
+
+## 5.react的优缺点
+
+## 6.React组件中props和state有什么区别？
+
+## 7.什么是JSX
+
+## 8.说一下angular、vue、react的相同点和不同点?各适用于什么样的项目场景?
+
+## 9.React中不同组件传递数据的方式有哪些？至少说出三种
+
+## 10.请描述React的组件加载生命周期函数以及shouldComponentUpdate方法的实际使用场景?
 
 
 
