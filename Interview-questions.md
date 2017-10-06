@@ -1034,18 +1034,54 @@ PS：webpack is a module bundle
 
 gulp与webpack可以实现一些相同功能，如下（列举部分）：
 
-| 功能      |    gulp | webpack |
-| :-------- | :--------|:-------- |
-| 文件合并与压缩（css）  | 使用gulp-minify-css模块
+**文件合并与压缩（css）**
+
+- gulp
+
+ 使用gulp-minify-css模块
+ 
+```
 gulp.task('sass',function(){
      gulp.src(cssFiles)
      .pipe(sass().on('error',sass.logError))
      .pipe(require('gulp-minify-css')())
      .pipe(gulp.dest(distFolder));
-}); |样式合并一般用到extract-text-webpack-plugin插件，
-压缩则使用webpack.optimize.UglifyJsPlugin。|
-| 文件合并与压缩（js） | 使用gulp-uglify和gulp-concat两个模块|js合并在模块化开始就已经做，压缩则使用webpack.optimize.UglifyJsPlugin |
-|启动server|使用gulp-webserver模块
+});
+```
+
+- webpack
+
+样式合并一般用到extract-text-webpack-plugin插件，
+压缩则使用webpack.optimize.UglifyJsPlugin。
+
+**文件合并与压缩（js）**
+
+- gulp
+
+使用gulp-uglify和gulp-concat两个模块
+
+- webpack
+
+js合并在模块化开始就已经做，
+压缩则使用webpack.optimize.UglifyJsPlugin
+
+**sass/less预编译**
+
+- gulp
+
+使用gulp-sass/gulp-less 模块
+
+- webpack
+
+sass-loader/less-loader 进行预处理
+
+**启动server**
+
+- gulp
+
+使用gulp-webserver模块
+
+```
 var webserver =require('gulp-webserver');
 gulp.task('webserver',function(){
      gulp.src('./')
@@ -1058,7 +1094,14 @@ gulp.task('webserver',function(){
                path:'./'
           },
      }));
-});|使用webpack-dev-server模块
+});
+```
+
+- webpack
+
+使用webpack-dev-server模块
+
+```
 module.exports = {
      ......
      devServer: {
@@ -1066,8 +1109,19 @@ module.exports = {
           port:8080,
           inline: true //实时刷新
      }
-}|
-|版本控制|使用gulp-rev和gulp-rev-collector两个模块|将生成文件加上hash值
+}
+```
+
+**版本控制**
+
+- gulp
+
+使用gulp-rev和gulp-rev-collector两个模块
+
+- webpack
+
+将生成文件加上hash值
+```
 module.exports = {
      ......
     output: {
@@ -1078,7 +1132,9 @@ module.exports = {
           ......
           new ExtractTextPlugin(style.[hash].css")
      ]
-}|
+}
+```
+
 
 **两者区别**
 虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。
