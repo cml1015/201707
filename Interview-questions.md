@@ -334,7 +334,10 @@ FF不能识别*，但能识别!important;
 
 　　内容是我们建立网站的诱因。有的网站展示它，有的则收集它，有的寻求，有的操作，还有的网站甚至会包含以上的种种，但相同点是它们全都涉及到内容。这使得“渐进增强”成为一种更为合理的设计范例。这也是它立即被 Yahoo! 所采纳并用以构建其“分级式浏览器支持 (Graded Browser Support)”策略的原因所在。
 
+[另一种答案]
 
+优雅降级 ：一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。
+渐进增强 ：针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。
 
 ## Flexbox
 
@@ -440,6 +443,41 @@ String、Number、Boolean、Array、Object、Null、Undefined
     - 将函数关联到对象的实例方法。
 
     - 封装相关的功能集。
+    
+[另一种解释]
+
+闭包是什么
+
+你可以这样回答：
+
+我个人理解，闭包是就是函数中的函数，里面的函数可以访问外面函数的变量，外面的变量的是这个内部函数的一部分。
+
+```
+<script>  
+    function  outer(){  
+        var num=0;//内部变量  
+       return  function add(){//通过return返回add函数，就可以在outer函数外访问了。  
+            num++;//内部函数有引用，作为add函数的一部分了  
+           console.log(num);  
+        };  
+    }  
+    var func1=outer();//  
+    func1();//实际上是调用add函数， 输出1  
+    func1();//输出2  
+    var func2=outer();  
+    func2();// 输出1  
+    func2();// 输出2  
+</script>  
+```
+闭包的作用
+
+1.使用闭包可以访问函数中的变量。
+
+2.可以使变量长期保存在内存中，生命周期比较长。
+
+加分项
+
+闭包不能滥用，否则会导致内存泄露，影响网页的性能。闭包使用完了后，要立即释放资源，将引用变量指向null。
 
 
 ### 3.JS实现继承的几种方式?
@@ -460,13 +498,33 @@ String、Number、Boolean、Array、Object、Null、Undefined
 
 ### 5.new Person()时发生了什么?
 
- 1.创建一个新对象；
+ 1.创建一个空对象；
+ ```
+ var obj=new Person();  
+ ```
 
- 2.将构造函数的作用域赋给新对象（因此 this 就指向了这个新对象）；
+ 2.设置原型链；
+ ```
+ obj.__proto__= Person.prototype; 
+ ```
 
- 3.执行构造函数中的代码（为这个新对象添加属性） ；
+ 3.让Person中的this指向obj，并执行Person的函数体;
+ ```
+ var result =Person.call(obj);  
+ ```
 
- 4.返回新对象。
+ 4.判断Person的返回值类型：
+
+如果是值类型，返回obj。如果是引用类型，就返回这个引用类型的对象。
+```
+if (typeof(result) == "object"){  
+  Person = result;  
+}  
+else{  
+    Person = obj;;  
+} 
+```
+
 
 ### 6.什么是深拷贝和浅拷贝？自己不用JSON.parse实现一个深拷贝的方法
 
@@ -665,9 +723,9 @@ $('selector').xyz();
 
  4.3 大部分插件都是用jQuery.fn.extend()
 
-5、JQuery的extend扩展方法：
+5. JQuery的extend扩展方法：
 
-     5.1、Jquery的扩展方法原型是:
+5.1 Jquery的扩展方法原型是:
 
 extend(dest,src1,src2,src3...);
          它的含义是将src1,src2,src3...合并到dest中,返回值为合并后的dest,由此可以看出该方法合并后，是修改了dest的结构的。
@@ -679,9 +737,9 @@ var result=$.extend({},{name:"Tom",age:21},{name:"Jerry",sex:"Boy"})
 那么合并后的结果：  result={name:"Jerry",age:21,sex:"Boy"}
      也就是说后面的参数如果和前面的参数存在相同的名称，那么后面的会覆盖前面的参数值。
 
-      5.2、省略dest参数
+5.2 省略dest参数
            上述的extend方法原型中的dest参数是可以省略的，如果省略了，则该方法就只能有一个src参数，而且是将该src合并到调用extend方法的对象中去，如：
- 　　5.2.1、$.extend(src)
+5.2.1 $.extend(src)
  　　该方法就是将src合并到jquery的全局对象中去，如：
 
   $.extend({
@@ -689,7 +747,7 @@ var result=$.extend({},{name:"Tom",age:21},{name:"Jerry",sex:"Boy"})
   });
        就是将hello方法合并到jquery的全局对象中。
 
- 　　5.2.2、$.fn.extend(src)
+5.2.2 $.fn.extend(src)
  　　该方法将src合并到jquery的实例对象中去，如:
 
   $.fn.extend({
@@ -707,7 +765,7 @@ $.extend($.net,{
 })
         这是将hello方法扩展到之前扩展的Jquery的net命名空间中去。
 
- 　　5.2.3、Jquery的extend方法还有一个重载原型：
+5.2.3 Jquery的extend方法还有一个重载原型：
 
  extend(boolean,dest,src1,src2,src3...)
         第一个参数boolean代表是否进行深度拷贝，其余参数和前面介绍的一致，什么叫深层拷贝，我们看一个例子：
@@ -737,7 +795,25 @@ var result={
 
 ## 谈一下jquery中的bind，live，delegate，on区别
 
+
+
+
 ## document.ready和document.load和$(function(){})有什么区别？
+
+1.执行时间 
+
+   window.onload必须等到页面内包括图片的所有元素加载完毕后才能执行。 
+   $(document).ready()是DOM结构绘制完毕后就执行，不必等到加载完毕。 
+   
+2.编写个数不同 
+
+   window.onload不能同时编写多个，如果有多个window.onload方法，只会执行一个 
+   $(document).ready()可以同时编写多个，并且都可以得到执行
+
+3.简化写法 
+
+   window.onload没有简化写法 
+   $(document).ready(function(){})可以简写成$(function(){});
 
 ## $.data()和$('#aaa').data()各自作用是什么？有什么区别
 
@@ -786,9 +862,431 @@ var result={
 ## 10.请描述React的组件加载生命周期函数以及shouldComponentUpdate方法的实际使用场景?
 
 
+# HTTP
+
+## 1.HTTP报文的组成部分
+
+## 2.GET和POST的区别
+
+1.传输数据大小限制
+   * GET以查询字符串的形式拼接到URL问号后边，？=mime类型&rvs_spt=1
+   * URL是有长度限制的俄，chrome 8kb，ie 2bk
+   * POST将发送给后台的数据放到请求体里面，没有大小限制
+2.安全问题 MD5加密
+   * GET 不安全，拼接到URL后边 容易被劫持
+   * POST 在请求体里
+3.缓存问题
+   * get有缓存  在？后拼接随机数或时间戳
+   https://www.baidu.com/_=Math.random
+   https://www.baidu.com/_=Data.now
+   * post是没有缓存的
+
+## 3.HTTP常见状态码
+
+HTTP状态码的英文为HTTP Status Code。
+
+**下面是常见的HTTP状态码：**
+
+- 200 - 请求成功
+- 301 - 资源（网页等）被永久转移到其它URL
+- 404 - 请求的资源（网页等）不存在
+- 500 - 内部服务器错误
+
+**HTTP状态码分类**
+
+1**	信息，服务器收到请求，需要请求者继续执行操作
+2**	成功，操作被成功接收并处理
+3**	重定向，需要进一步的操作以完成请求
+4**	客户端错误，请求包含语法错误或无法完成请求
+5**	服务器错误，服务器在处理请求的过程中发生了错误
+
+**HTTP状态码列表**
+
+- 100	Continue	继续。客户端应继续其请求
+- 101	Switching Protocols	切换协议。服务器根据客户端的请求切换协议。只能切换到更高级的协议，例如，切换到HTTP的新版本协议
+- 200	OK	请求成功。一般用于GET与POST请求
+- 201	Created	已创建。成功请求并创建了新的资源
+- 202	Accepted	已接受。已经接受请求，但未处理完成
+- 203	Non-Authoritative Information	非授权信息。请求成功。但返回的meta信息不在原始的服务器，而是一个副本
+- 204	No Content	无内容。服务器成功处理，但未返回内容。在未更新网页的情况下，可确保浏览器继续显示当前文档
+- 205	Reset Content	重置内容。服务器处理成功，用户终端（例如：浏览器）应重置文档视图。可通过此返回码清除浏览器的表单域
+- 206	Partial Content	部分内容。服务器成功处理了部分GET请求
+- 300	Multiple Choices	多种选择。请求的资源可包括多个位置，相应可返回一个资源特征与地址的列表用于用户终端（例如：浏览器）选择
+- 301	Moved Permanently	永久移动。请求的资源已被永久的移动到新URI，返回信息会包括新的URI，浏览器会自动定向到新URI。今后任何新的请求都应使用新的URI代替
+- 302	Found	临时移动。与301类似。但资源只是临时被移动。客户端应继续使用原有URI
+- 303	See Other	查看其它地址。与301类似。使用GET和POST请求查看
+- 304	Not Modified	未修改。所请求的资源未修改，服务器返回此状态码时，不会返回任何资源。客户端通常会缓存访问过的资源，通过提供一个头信息指出客户端希望只返回在指定日期之后修改的资源
+- 305	Use Proxy	使用代理。所请求的资源必须通过代理访问
+- 306	Unused	已经被废弃的HTTP状态码
+- 307	Temporary Redirect	临时重定向。与302类似。使用GET请求重定向
+- 400	Bad Request	客户端请求的语法错误，服务器无法理解
+- 401	Unauthorized	请求要求用户的身份认证
+- 402	Payment Required	保留，将来使用
+- 403	Forbidden	服务器理解请求客户端的请求，但是拒绝执行此请求
+- 404	Not Found	服务器无法根据客户端的请求找到资源（网页）。通过此代码，网站设计人员可设置"您所请求的资源无法找到"的个性页面
+- 405	Method Not Allowed	客户端请求中的方法被禁止
+- 406	Not Acceptable	服务器无法根据客户端请求的内容特性完成请求
+- 407	Proxy Authentication Required	请求要求代理的身份认证，与401类似，但请求者应当使用代理进行授权
+- 408	Request Time-out	服务器等待客户端发送的请求时间过长，超时
+- 409	Conflict	服务器完成客户端的PUT请求是可能返回此代码，服务器处理请求时发生了冲突
+- 410	Gone	客户端请求的资源已经不存在。410不同于404，如果资源以前有现在被永久删除了可使用410代码，网站设计人员可通过301代码指定资源的新位置
+- 411	Length Required	服务器无法处理客户端发送的不带Content-Length的请求信息
+- 412	Precondition Failed	客户端请求信息的先决条件错误
+- 413	Request Entity Too Large	由于请求的实体过大，服务器无法处理，因此拒绝请求。为防止客户端的连续请求，服务器可能会关闭连接。如果只是服务器暂时无法处理，则会包含一个Retry-After的响应信息
+- 414	Request-URI Too Large	请求的URI过长（URI通常为网址），服务器无法处理
+- 415	Unsupported Media Type	服务器无法处理请求附带的媒体格式
+- 416	Requested range not satisfiable	客户端请求的范围无效
+- 417	Expectation Failed	服务器无法满足Expect的请求头信息
+- 500	Internal Server Error	服务器内部错误，无法完成请求
+- 501	Not Implemented	服务器不支持请求的功能，无法完成请求
+- 502	Bad Gateway	充当网关或代理的服务器，从远端服务器接收到了一个无效的请求
+- 503	Service Unavailable	由于超载或系统维护，服务器暂时的无法处理客户端的请求。延时的长度可包含在服务器的Retry-After头信息中
+- 504	Gateway Time-out	充当网关或代理的服务器，未及时从远端服务器获取请求
+- 505	HTTP Version not supported	服务器不支持请求的HTTP协议的版本，无法完成处理
 
 
 
+## 4.什么是Restful API?
+
+
+## 5.HTTPS和HTTP的区别是什么?
+
+
+
+
+## 6.从在浏览器中输入URL到页面渲染出来都经过了什么过程？
+
+
+## 7.JSON和JSONP 区别是什么？JSONP的原理是？
+
+
+## 8.用过那些跨域技术
+
+
+## 9.ajax的参数
+
+
+# 前后端通信
+
+## 1.什么是同源策略及限制?
+
+JavaScript出于安全方面的考虑，不允许跨域调用其他页面的对象
+
+同源策略是由Netscape提出的著名安全策略，是浏览器最核心、基本的安全功能,它限制了一个源(origin)中加载文本或者脚本与来自其他源(origin)中资源的交互方式
+，所谓的同源就是指协议、域名、端口相同。
+当浏览器执行一个脚本时会检查是否同源，只有同源的脚本才会执行，如果不同源即为跨域
+
+
+## 2.前后端如何通信?
+
+
+## 3.用原生JS模拟一下jquery的ajax方法
+
+```
+/* 封装ajax函数
+ * @param {string}opt.type http连接的方式，包括POST和GET两种方式
+ * @param {string}opt.url 发送请求的url
+ * @param {boolean}opt.async 是否为异步请求，true为异步的，false为同步的
+ * @param {object}opt.data 发送的参数，格式为对象类型
+ * @param {function}opt.success ajax发送并接收成功调用的回调函数
+ */
+    function ajax(opt) {
+        opt = opt || {};
+        opt.method = opt.method.toUpperCase() || 'POST';
+        opt.url = opt.url || '';
+        opt.async = opt.async || true;
+        opt.data = opt.data || null;
+        opt.success = opt.success || function () {};
+        var xmlHttp = null;
+        if (XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        }
+        else {
+            xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+        }var params = [];
+        for (var key in opt.data){
+            params.push(key + '=' + opt.data[key]);
+        }
+        var postData = params.join('&');
+        if (opt.method.toUpperCase() === 'POST') {
+            xmlHttp.open(opt.method, opt.url, opt.async);
+            xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');
+            xmlHttp.send(postData);
+        }
+        else if (opt.method.toUpperCase() === 'GET') {
+            xmlHttp.open(opt.method, opt.url + '?' + postData, opt.async);
+            xmlHttp.send(null);
+        } 
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                opt.success(xmlHttp.responseText);
+            }
+        };
+    }
+```
+
+使用实例
+
+```
+ajax({
+    method: 'POST',
+    url: 'test.php',
+    data: {
+        name1: 'value1',
+        name2: 'value2'
+    },
+    success: function (response) {
+       console.log(response)；
+    }
+});
+```
+
+## 4.跨域通信的几种方式?
+
+1. 利用jsonp 方式
+
+最常见的一种跨域方式，其背后原理就是利用了script标签不受同源策略的限制，在页面中动态插入了script，script标签的src属性就是后端api接口的地址，并且以get的方式将前端回调处理函数名称告诉后端，后端在响应请求时会将回调返还，并且将数据以参数的形式传递回去。
+
+前端
+```
+//http://127.0.0.1:8888/jsonp.html
+var script = document.createElement('script');
+      script.src = 'http://127.0.0.1:2333/jsonpHandler?callback=_callback'
+      document.body.appendChild(script);      //插入script标签
+      //回调处理函数 _callback
+      var _callback = function(obj){
+          for(key in obj){
+            console.log('key: ' + key +' value: ' + obj[key]);
+          }
+      }
+```
+后端:
+```
+//http://127.0.0.1:2333/jsonpHandler
+app.get('/jsonpHandler', (req,res) => {
+  let callback = req.query.callback;
+  let obj = {
+    type : 'jsonp',
+    name : 'weapon-x'
+  };
+  res.writeHead(200, {"Content-Type": "text/javascript"});
+  res.end(callback + '(' + JSON.stringify(obj) + ')');
+})
+```
+在jsonp.html中打开控制台可以看到返回数据的输出:
+
+2. CORS (XMLHttpRequest level 2)
+
+3. postmessage跨域
+
+在HTML5中新增了postMessage方法，postMessage可以实现跨文档消息传输（Cross Document Messaging），Internet Explorer 8, Firefox 3, Opera 9, Chrome 3和 Safari 4都支持postMessage。
+该方法可以通过绑定window的message事件来监听发送跨文档消息传输内容。
+使用postMessage实现跨域的话原理就类似于jsonp，动态插入iframe标签，再从iframe里面拿回数据
+，私认为用作跨页面通信更加适合
+
+4. 服务器跨域
+
+在前后端分离的项目中可以借助服务器实现跨域，具体做法是：前端向本地服务器发送请求，本地服务器代替前端再向api服务器接口发送请求进行服务器间通信，本地服务器其实就是个中转站的角色，再将响应的数据返回给前端，下面用node.js做一个示例
+
+前端:
+```
+//http://127.0.0.1:8888/server
+var xhr = new XMLHttpRequest();
+    xhr.onload = function(data){
+      var _data = JSON.parse(data.target.responseText)
+      for(key in _data){
+        console.log('key: ' + key +' value: ' + _data[key]);
+      }
+    };
+    xhr.open('POST','http://127.0.0.1:8888/feXhr',true);  //向本地服务器发送请求   
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send("url=http://127.0.0.1:2333/beXhr");    //以参数形式告知需要请求的后端接口
+```
+后端:
+```
+//http://127.0.0.1:8888/feXhr
+app.post('/feXhr',(req,res) => {
+  let url  = req.body.url;
+  superagent.get(url)           //使用superagent想api接口发送请求
+      .end(function (err,docs) {
+          if(err){
+              console.log(err);
+              return
+          }
+          res.end(docs.res.text); //返回到前端
+      })
+})
+
+//http://127.0.0.1:2333/beXhr
+app.get('/beXhr',(req,res) => {
+  let obj = {
+    type : 'superagent',
+    name : 'weapon-x'
+  };
+  res.writeHead(200, {"Content-Type": "text/javascript"});
+  res.end(JSON.stringify(obj));     //响应
+})
+```
+回到 http://127.0.0.1:8888/server 页面打开控制台可以看到数据输出：
+
+
+
+# 安全
+
+## 1.CSRF的原理以及如何防御
+## 2.XSS的原生和如何防御
+
+
+# 渲染机制
+
+## 1.什么是DOCTYPE及作用?标准模式和兼容模式有什么区别?
+## 2.浏览器是如何渲染页面的?
+
+1.解析HTML文件，创建DOM树
+自上而下，遇到任何样式（link、style）与脚本（script）都会阻塞（外部样式不阻塞后续外部脚本的加载）。
+2.解析CSS
+优先级：浏览器默认设置<用户设置<外部样式<内联样式<HTML中的style样式；
+特定级：id数*100+类或伪类数*10+tag名称*1
+3.将CSS与DOM合并，构建渲染树（renderingtree）
+DOM树与HTML一一对应，渲染树会忽略诸如head、display:none的元素
+4.布局和绘制，重绘（repaint）和重排（reflow）
+重排：若渲染树的一部分更新，且尺寸变化，就会发生重排；
+重绘：部分节点需要更新，但不改变其他集合形状。如改变某个元素的颜色，就会发生重绘。
+
+## 3.什么是重排？什么时候会触发重排?
+
+**重排**当DOM的变化影响了元素的几何属性（宽或高），浏览器需要重新计算元素的几何属性，同样其他元素的几何属性和位置也会因此受到影响。浏览器会使渲染树中受到影响的部分失效，并重新构造渲染树。这个过程称为重排。
+
+重排一定会引起浏览器的重绘，一个元素的重排通常会带来一系列的反 应，甚至触发整个文档的重排和重绘，性能代价是高昂的。
+
+**何时重排**
+1、添加或者删除可见的DOM元素
+2、元素位置改变
+3、元素尺寸改变
+4、元素内容改变（例如：一个文本被另一个不同尺寸的图片替代）
+5、页面渲染初始化（这个无法避免）
+6、浏览器窗口尺寸改变
+
+## 4.什么是重绘？什么时候会触发重绘?
+
+完成重排后，浏览器会重新绘制受影响的部分到屏幕，该过程称为重绘。
+
+# JS运行机制
+
+## 1.如何理解JS的单线程
+## 2.什么是Event Loop,请简述其过程
+
+
+# 服务器
+
+## 1.如何在web应用中在实现权限控制?
+## 2.Web服务器、应用服务器、Web容器、反向代理服务器的区别和联系?
+
+
+# 错误处理
+
+## 1.前端错误的分类?
+## 2.程序出现bug了，你是如何调试的?
+## 3.如何分类捕获不同的错误?
+## 4.如何把生产环境的错误上报？
+
+# 页面性能
+
+## 1.前端性能优化的方法有哪些？至少说出10种以上
+
+ 雅虎35条军规
+
+## 2.如何实现JS的异步加载? async和defer的区别是什么?
+
+
+
+
+# 缓存
+
+## 1.Expires和Cache-Control是如何工作的？
+
+## 2.Last-Modified和Etag是如何工作的？
+
+## 3.请描述cookie、sessionStorage和localStorage的区别
+
+相同点：都存储在客户端
+不同点：
+1.存储大小
+cookie数据大小不能超过4k。
+sessionStorage和localStorage 虽然也有存储大小的限制，但比cookie大得多，可以达到5M或更大。
+2.有效时间
+localStorage    存储持久数据，浏览器关闭后数据不丢失除非主动删除数据；
+sessionStorage  数据在当前浏览器窗口关闭后自动删除。
+cookie          设置的cookie过期时间之前一直有效，即使窗口或浏览器关闭
+3. 数据与服务器之间的交互方式
+cookie的数据会自动的传递到服务器，服务器端也可以写cookie到客户端
+sessionStorage和localStorage不会自动把数据发给服务器，仅在本地保存。
+
+**设置Cookie** 
+
+cookie的几个要素
+
+cookie的内容：采用 key=value;key=value……存储，参数名自定义
+
+cookie的过期时间：使用参数expires
+
+cookie的路径：使用参数path，"/"表示这个网站的页面，不推荐!容易产生冲突
+
+注意：形如“/pro/index.html”路径，在google浏览器正常，在IE浏览器得不到值 
+
+cookie的表示方式示例
+```
+var name = "jack";  
+var pwd = "123";  
+var now = new Date();  
+now.setTime(now.getTime() +1 * 24 * 60 * 60 * 1000);//转毫秒  
+var path = "/";//可以是具体的网页  
+document.cookie = "name=" + name + ";expires=" + now.toUTCString() + ";path=" + path;//姓名  
+document.cookie= "pwd=" + pwd + ";expires=" + now.toUTCString()+ ";path=" + path; //密码
+```
+**读取cookie**
+
+获取cookie内容
+```
+var data=document.cookie;//获取对应页面的cookie  
+```
+
+解析cookie
+方式1：截取字符串
+```
+function getKey(key) {  
+    var data = document.cookie;  
+    var findStr = key + "=";  
+    //找到key的位置  
+    var index = data.indexOf(findStr);  
+    if (index == -1)  
+        return null;  
+    var subStr = data.substring(index +findStr.length);  
+    var lastIndex = subStr.indexOf(";");  
+    if (lastIndex == -1) {  
+        return subStr;  
+ } else {  
+        return subStr.substring(0,lastIndex);  
+ }  
+}  
+```
+方式2：使用正则表达式+JSON
+```
+function getKey(key) {  
+    return JSON.parse("{\"" +document.cookie.replace(/;\s+/gim, "\",\"").replace(/=/gim, "\":\"") + "\"}")[key];  
+}  
+```
+
+**清除cookie**
+```
+
+var name = null;  
+var pwd = null;  
+var now = new Date();  
+var path = "/";//可以是具体的网页  
+document.cookie= "name=" + name + ";expires=" + now.toUTCString()+ ";path=" + path;//姓名  
+document.cookie = "pwd=" + pwd + ";expires=" + now.toUTCString()+ ";path=" + path; //密码  
+```
 
 
 
