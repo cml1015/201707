@@ -316,28 +316,11 @@ FF不能识别*，但能识别!important;
 
 ### 4.什么是优雅降级和渐进增强?
 
-- 渐进增强 progressive enhancement：针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。
-
-- 优雅降级 graceful degradation：一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。
-
-- 区别：优雅降级是从复杂的现状开始，并试图减少用户体验的供给，而渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要。降级（功能衰减）意味着往回看；而渐进增强则意味着朝前看，同时保证其根基处于安全地带
-
-- “优雅降级”观点
-
-　　“优雅降级”观点认为应该针对那些最高级、最完善的浏览器来设计网站。而将那些被认为“过时”或有功能缺失的浏览器下的测试工作安排在开发周期的最后阶段，并把测试对象限定为主流浏览器（如 IE、Mozilla 等）的前一个版本。
-
-　　在这种设计范例下，旧版的浏览器被认为仅能提供“简陋却无妨 (poor, but passable)” 的浏览体验。你可以做一些小的调整来适应某个特定的浏览器。但由于它们并非我们所关注的焦点，因此除了修复较大的错误之外，其它的差异将被直接忽略。
-
-- “渐进增强”观点
-
-　　“渐进增强”观点则认为应关注于内容本身。
-
-　　内容是我们建立网站的诱因。有的网站展示它，有的则收集它，有的寻求，有的操作，还有的网站甚至会包含以上的种种，但相同点是它们全都涉及到内容。这使得“渐进增强”成为一种更为合理的设计范例。这也是它立即被 Yahoo! 所采纳并用以构建其“分级式浏览器支持 (Graded Browser Support)”策略的原因所在。
-
-[另一种答案]
-
 优雅降级 ：一开始就构建完整的功能，然后再针对低版本浏览器进行兼容。
 渐进增强 ：针对低版本浏览器进行构建页面，保证最基本的功能，然后再针对高级浏览器进行效果、交互等改进和追加功能达到更好的用户体验。
+
+区别： a. 优雅降级是从复杂的现状开始，并试图减少用户体验的供给 b. 渐进增强则是从一个非常基础的，能够起作用的版本开始，并不断扩充，以适应未来环境的需要 c. 降级（功能衰减）意味着往回看；而渐进增强则意味着朝前看，同时保证其根基处于安全地带
+
 
 ## Flexbox
 
@@ -795,8 +778,166 @@ var result={
 
 ## 谈一下jquery中的bind，live，delegate，on区别
 
+```
+<ul id="members" data-role="listview" data-filter="true"><!-- ... more list items ... -->  
+    <li>  
+<h3>John Resig</h3>  
+<a href="detail.html?id=10">  
+<strong>jQuery Core Lead</strong>  
+   
+Boston, United States  
+</a></li>  
+<!-- ... more list items ... --></ul> 
+```
+**.bind()**
+
+.bind()注册的事件直接指向相对应的DOM元素。这个方法从jQuery 1.0都有了，并且这个方法能够很酷的处理跨浏览器的事件绑定问题。对，这个方法用起来很方便。但是问题来了，就是各种各样的性能问题，如下：
+```
+/* The .bind() method attaches the event handler directly to the DOM 
+element in question ( "#members li a" ). The .click() method is 
+just a shorthand way to write the .bind() method. */  
+   
+$( "#members li a" ).bind( "click", function( e ) {} );  
+$( "#members li a" ).click( function( e ) {} ); 
+```
+**优点**
+- 跨浏览器
+- 非常方便和快捷地绑定事件
+- 简单的实现方法（.click() .hover() ,etc…）让它用起来很方便
+- 对于简单的ID选择器来说，使用.bind()不仅方便，而且当触发这个事件的时候能够即时响应。
+
+**缺点**
+
+- 这个方法会附加相同的处理程序到每一个匹配到的元素上
+- 对于动态添加的属于匹配到的元素，不会被触发事件的
+- 性能问题，对于处理大量的匹配元素的时候
+- 如果在页面加载前要处理添加事件的话，会影响加载效率的
 
 
+**.live()**
+
+.live()方法使用的是事件委托的概念来执行所谓的“神奇方法”。调用.live()方法看起来和调用.bind()方法一样，非常方便。但是他们下面的实现原理却不同。.live()方法附加事件处理程序到根一级的document上来关联匹配到的元素和事件信息。通过注册事件处理程序到document上来允许事件处理程序通过冒泡来绑定事件和匹配的元素（译者：注意，事件其实在document上的）。一旦事件冒泡到document的时候，jQuery判断选择器和事件处理程序是否有匹配到的，如果有的话，则调用对应的事件处理程序。很明显的会在用户使用的过程中有性能问题，但是在绑定注册的时候是非常的迅速的。
+
+```
+/* The .live() method attaches the event handler to the root level 
+document along with the associated selector and event information 
+( "#members li a" & "click" ) */  
+   
+$( "#members li a" ).live( "click", function( e ) {} );  
+```
+**优点**
+
+- 相对于.bind()的循环注册很多次事件处理程序来说，.live()只注册一次事件处理程序
+- 从.bind()更新到.live()的方法对程序更改很少，只需要替换“bind”为”live”
+- 对于动态添加的属于匹配到的元素，也能够“神奇”的执行处理程序
+- 在document元素没有全部加载完之前都能够几乎不花时间地绑定并触发事件
+
+**缺点**
+
+- 此方法在jQuery1.7的时候已经废除，你应该逐步从你的代码中替换掉该方法
+- 链接不能够正常的支持这个方法
+- 这个方法被抛弃是因为它只能够绑定事件处理程序到document上
+- event.stopPropagation()不再有效了，因为事件已经委托到了document上了
+- 由于所有的选择器和事件信息都是附加到了document上的，所以一个确定的事件要触发，必须通过大量的存储信息来匹配到
+- 由于事件都是委托到了document上的，所以如果DOM太深的话，会影响到性能的
+
+**.delegate()**
+
+.delegate()方法的行为有点类似.live()。但是不是把选择器和事件的信息附加到了document上，而是可以自行选择它要附加的DOM元素，这个技术可以让事件的委托正常工作。 如果你跳过了.live()的介绍和分析，请先跳回去读一下，接着我才能向你表述清楚下面的逻辑
+
+```
+/*.delegate()的处理方法类似.live()，但是不是将事件处理程序附加到了document上，而是可以选择它在哪里（"#members"）。选择器和事件信息（"li a" 和 "click"）将会附加到“#members”元素上。 */  
+$( "#members" ).delegate( "li a", "click", function( e ) {} ); 
+```
+.delegate()方法是非常强大的。上面的代码会将事件处理程序以及选择器和事件信息附加到”#members”上。这个当然要比.live()将这些内容附加到document上有效的多了。另外有很多其他的一年问题也通过.delegate()这个方法解决了。请参阅下列大纲的详细列表。
+
+**优点**
+
+- 可以自由选择附加的选择器和事件信息的位置
+- 链接也可以有效的支持了
+- jQuery仍然需要循环访问选择器和事件数据来确定匹配，但是因为能够选择这些信息附加的位置，所以通过匹配的量小很多了
+- 由于这种技术使用了事件委托，所以它能很好的动态处理添加到DOM元素
+- 如果你委托事件到了document上，你也可以在document全部准备完之前绑定和调用
+
+**缺点**
+
+- 方法从.bind()更改到.delegate()比较麻烦
+- 如果把选择器和事件数据附加到了document上，仍然需要很多的匹配信息，但是相对于.live()的存储量要小很多了
+
+你知道jQuery中的.bind() .live 和 .delegate()方法都是通过同一个新方法实现的–.on() （在jQuery1.7后），下面的代码片段来自jQuery 1.7.1 codebase in GitHub…
+```
+Code example:  
+  
+// ... more code ...  
+   
+bind: function( types, data, fn ) {  
+return this.on( types, null, data, fn );  
+},  
+unbind: function( types, fn ) {  
+return this.off( types, null, fn );  
+},  
+   
+live: function( types, data, fn ) {  
+jQuery( this.context ).on( types, this.selector, data, fn );  
+return this;  
+},  
+die: function( types, fn ) {  
+jQuery( this.context ).off( types, this.selector || "**", fn );  
+return this;  
+},  
+   
+delegate: function( selector, types, data, fn ) {  
+return this.on( types, selector, data, fn );  
+},  
+undelegate: function( selector, types, fn ) {  
+return arguments.length == 1 ?  
+this.off( selector, "**" ) :  
+this.off( types, selector, fn );  
+},  
+   
+// ... more code ...  
+```
+
+这就意味着这个新方法的用法可以像下面这样
+
+```
+/* The jQuery .bind(), .live(), and .delegate() methods are just one 
+line pass throughs to the new jQuery 1.7 .on() method */  
+   
+// Bind  
+$( "#members li a" ).on( "click", function( e ) {} );  
+$( "#members li a" ).bind( "click", function( e ) {} );  
+   
+// Live  
+$( document ).on( "click", "#members li a", function( e ) {} );  
+$( "#members li a" ).live( "click", function( e ) {} );  
+   
+// Delegate  
+$( "#members" ).on( "click", "li a", function( e ) {} );  
+$( "#members" ).delegate( "li a", "click", function( e ) {} ); 
+```
+
+
+你会注意到，具体取决于我如何调用.on()方法来更改它的执行过程。你可以考虑“重载”.on()方法来具有不同的效果。这个方法给API带来了很多的一致性，并希望减少那些方法的混淆。
+优点
+
+为各种事件绑定方法带来了统一性
+简化了jQuery代码库，并删除一个界别的重定向，因为通过调用这个方法实现了 .bind() .live() 和 .delegate()
+仍然提供了好用的.delegate()方法，但是也仍然对.bind()方法提供了支持
+缺点
+
+因为调用这个方法的各个形式，会带来一些混乱
+
+**总结**
+
+如果你已经对各种类型的事件绑定方法混淆的神志不清的话也别担心，这是因为历史遗留问题和API在随着时间的推移导致的。有些人认为这些方法作为魔法方法，但是一旦你发现他们如何工作的将会更好的利于你的项目。
+
+从这篇文章中应该记住的要点：
+- 使用.bind()方法是很浪费资源的，因为它要匹配选择器中的每一项并且挨个设置相同的事件处理程序
+- 建议停止使用.live()方法，因为它已经被弃用了，由于他有很多的问题
+- .delegate()方法“很划算”用来处理性能和响应动态添加元素的时候
+- 新的.on()方法主要是可以实现.bind() .live() 甚至 .delegate()的功能
+- 建议使用.on()方法，如果你的项目使用了1.7+的jQuery的话
 
 ## document.ready和document.load和$(function(){})有什么区别？
 
@@ -822,26 +963,141 @@ var result={
 
 ## 1.什么时候应该用箭头函数？什么时候不能用？ － 请写出ES6中Array.isArray()的实现代码
 
+
+
 ## 2.如何在项目中解析处理es6和es7代码
+
+首先安装必要的`Babel`模块：`npm install --save-dev babel-preset-stage-0`
+
+然后在`.babelrc`文件中添加这个preset的配置：
+```
+{
+    "presets": ["es2015", "react", "stage-0"]
+}
+```
 
 ## 3.Promise常用方法，Promise.race的作用，then方法里reject和catch的区别
 
+- 方法：Promise.all实现并行,Promise.race实现选择,Promise.then
+
+- Promise.race实现选择
+接受一个数组，数组内都是Promise实例,返回一个Promise实例，这个Promise实例的状态转移取决于参数的Promise实例的状态变化。当参数中任何一个实例处于resolve状态时，返回的Promise实例会变为resolve状态。如果参数中任意一个实例处于reject状态，返回的Promise实例变为reject状态。
+```
+const fs = require('fs');
+let p1 =  new Promise((resolve,reject)=>{
+    fs.readFile('./name.txt','utf8',function (err,data) {
+        resolve(data);
+    });
+})
+let p2 = new Promise((resolve,reject)=>{
+    fs.readFile('./age.txt','utf8',function (err,data) {
+        resolve(data);
+    });
+})
+Promise.race([p1,p2]).then(([res1,res2])=>{
+    console.log(res1,res2);
+})
+```
+
+- 区别：
+
+catch 当一个 promise 被拒绝(reject)时,catch 方法会被执行,通常我们在 reject 方法里处理执行失败的结果，而在catch 里执行异常结果
 
 # 工程化
 
 ## 1.什么叫模块化？你用过哪些模块化解决方案？
 
+- 模块化是一种将系统分离成独立功能部分的方法，可将系统分割成独立的功能部分，严格定义模块接口、模块间具有透明性。
+
+- NodeJS，Vue.js,webpack
+
+
 ## 2.什么叫组件化？你在工作中是如何实现组件化的？
+
+- 组件化：将一个页面分割成若干部分，一个页面js+css+html，将自己的内容分割出来，方便我们开发，更好的维护我们的代码，每个组件封装自己的js+css+html，避免了样式命名冲突。
 
 ## 3.gulp和webpack的相同点和不同点?
 
+**gulp**
+
+gulp强调的是前端开发的工作流程，我们可以通过配置一系列的task，定义task处理的事务（例如文件压缩合并、雪碧图、启动server、版本控制等），然后定义执行顺序，来让gulp执行这些task，从而构建项目的整个前端开发流程。
+
+PS：简单说就一个Task Runner
+
+**webpack**
+
+webpack是一个前端模块化方案，更侧重模块打包，我们可以把开发中的所有资源（图片、js文件、css文件等）都看成模块，通过loader（加载器）和plugins（插件）对资源进行处理，打包成符合生产环境部署的前端资源。
+
+PS：webpack is a module bundle
+
+相同功能
+
+gulp与webpack可以实现一些相同功能，如下（列举部分）：
+
+| 功能      |    gulp | webpack |
+| :-------- | :--------|:-------- |
+| 文件合并与压缩（css）  | 使用gulp-minify-css模块
+gulp.task('sass',function(){
+     gulp.src(cssFiles)
+     .pipe(sass().on('error',sass.logError))
+     .pipe(require('gulp-minify-css')())
+     .pipe(gulp.dest(distFolder));
+}); |样式合并一般用到extract-text-webpack-plugin插件，
+压缩则使用webpack.optimize.UglifyJsPlugin。|
+| 文件合并与压缩（js） | 使用gulp-uglify和gulp-concat两个模块|js合并在模块化开始就已经做，压缩则使用webpack.optimize.UglifyJsPlugin |
+|启动server|使用gulp-webserver模块
+var webserver =require('gulp-webserver');
+gulp.task('webserver',function(){
+     gulp.src('./')
+     .pipe(webserver({
+          host:'localhost',
+          port:8080,
+          livereload:true, //自动刷新
+          directoryListing:{
+               enable: true,
+               path:'./'
+          },
+     }));
+});|使用webpack-dev-server模块
+module.exports = {
+     ......
+     devServer: {
+          contentBase: "build/",
+          port:8080,
+          inline: true //实时刷新
+     }
+}|
+|版本控制|使用gulp-rev和gulp-rev-collector两个模块|将生成文件加上hash值
+module.exports = {
+     ......
+    output: {
+        ......
+        filename: "[name].[hash:8].js"
+    },
+     plugins:[
+          ......
+          new ExtractTextPlugin(style.[hash].css")
+     ]
+}|
+
+**两者区别**
+虽然都是前端自动化构建工具，但看他们的定位就知道不是对等的。
+
+gulp严格上讲，模块化不是他强调的东西，他旨在规范前端开发流程。
+
+webpack更是明显强调模块化开发，而那些文件压缩合并、预处理等功能，不过是他附带的功能。
+
+
 ## 4.什么是热加载?
 
+热加载的思想是运行时动态注入修改后的文件内容，同时不中断 APP 的正常运行。这样，我们就不会丢失 APP 的任何状态信息，尤其是 UI 页面栈相关的。热加载基本上看不出刷新的效果，类似于局部刷新。
+热加载的基础是模块热替换（HMR，Hot Module Replacement[3]），HMR 最开始是由 Webpack 引入的，我们在 React Native Packager 中也实现了这个功能。HMR 使得 Packager 可以监控文件的改动并发送 HMR 更新消息（HMR update）给包含在 APP 中的一层很薄的 HMR 运行时（HMR runtime）。
 
 
 # 框架
 
 ## 1.前端路由的实现原理
+
 
 ## 2.MVVM框架解决了什么问题？带来了什么问题？
 
@@ -850,10 +1106,22 @@ var result={
 ## 4.vue中父组件如何给子组件传递值
 
 ## 5.react的优缺点
+**优点**
+- React伟大之处就在于，提出了Virtual Dom这种新颖的思路，并且这种思路衍生出了React Native，有可能会统一Web/Native开发。在性能方面，由于运用了Virtual Dom技术，Reactjs只在调用setState的时候会更新dom，而且还是先更新Virtual Dom，然后和实际Dom比较，最后再更新实际Dom。这个过程比起Angularjs的bind方式来说，一是更新dom的次数少，二是更新dom的内容少，速度肯定快，
+- ReactJS更关注UI的组件化，和数据的单向更新，提出了FLUX架构的新概念，现在React可以直接用Js ES6语法了，然后通过webpack编译成浏览器兼容的ES5，开发效率上有些优势. 
+- React Native生成的App不是运行在WebView上，而是系统原生的UI，React通过jsx生成系统原生的UI，iOS和Android的React UI组件还是比较相似的，大量代码可以复用
+- 维护UI的状态,Angular 里面使用的是 $scope，在 React 里面使用的是 this.setState。 而 React 的好处在于，它更简单直观。所有的状态改变都只有唯一一个入口 this.setState()，Angular 就比较复杂，不知道背后使用了哪些黑魔法。
+- 同构的JavaScript 
+- 单页面JS应用程序的最大缺陷在于对搜索引擎的索引有很大限制。React对此有了解决方案。 
+- React可以在服务器上预渲染应用再发送到客户端。它可以从预渲染的静态内容中恢复一样的记录到动态应用程序中。 
+- 因为搜索引擎的爬虫程序依赖的是服务端响应而不是JavaScript的执行，预渲染你的应用有助于搜索引擎优化。
 
 ## 6.React组件中props和state有什么区别？
 
 ## 7.什么是JSX
+
+JSX就是Javascript和XML结合的一种格式
+
 
 ## 8.说一下angular、vue、react的相同点和不同点?各适用于什么样的项目场景?
 
@@ -865,6 +1133,16 @@ var result={
 # HTTP
 
 ## 1.HTTP报文的组成部分
+
+HTTP报文分为请求报文(request message)与响应报文(response message)。
+
+一个HTTP报文由3部分组成，分别是:
+
+　　(1)、起始行(start line)
+
+　　(2)、首部(header)
+
+　　(3)、主体(body)
 
 ## 2.GET和POST的区别
 
@@ -951,33 +1229,127 @@ HTTP状态码的英文为HTTP Status Code。
 
 ## 5.HTTPS和HTTP的区别是什么?
 
+HTTP协议通常承载于TCP协议之上，在HTTP和TCP之间添加一个安全协议层（SSL或TSL），这个时候，就成了我们常说的HTTPS。
+
+默认HTTP的端口号为80，HTTPS的端口号为443。
 
 
 
 ## 6.从在浏览器中输入URL到页面渲染出来都经过了什么过程？
 
+**分为4个步骤：**
+
+（1），当发送一个URL请求时，不管这个URL是Web页面的URL还是Web页面上每个资源的URL，浏览器都会开启一个线程来处理这个请求，同时在远程DNS服务器上启动一个DNS查询。这能使浏览器获得请求对应的IP地址。
+
+（2）， 浏览器与远程`Web`服务器通过`TCP`三次握手协商来建立一个`TCP/IP`连接。该握手包括一个同步报文，一个同步-应答报文和一个应答报文，这三个报文在 浏览器和服务器之间传递。该握手首先由客户端尝试建立起通信，而后服务器应答并接受客户端的请求，最后由客户端发出该请求已经被接受的报文。
+
+（3），一旦`TCP/IP`连接建立，浏览器会通过该连接向远程服务器发送`HTTP`的`GET`请求。远程服务器找到资源并使用HTTP响应返回该资源，值为200的HTTP响应状态表示一个正确的响应。
+
+（4），此时，`Web`服务器提供资源服务，客户端开始下载资源。
+
+请求返回后，便进入了我们关注的前端模块
+
+简单来说，浏览器会解析`HTML`生成`DOM Tree`，其次会根据CSS生成CSS Rule Tree，而`javascript`又可以根据`DOM API`操作`DOM`
+
 
 ## 7.JSON和JSONP 区别是什么？JSONP的原理是？
 
+json返回的是一串数据；而jsonp返回的是脚本代码（包含一个函数调用），JSONP就是用来解决跨域请求问题的。
 
-## 8.用过那些跨域技术
+ajax请求受同源策略影响，不允许进行跨域请求，而script标签src属性中的链接却可以访问跨域的js脚本，利用这个特性，服务端不再返回JSON格式的数据，而是返回一段调用某个函数的js代码，在src中进行了调用，这样实现了跨域。
 
+参考网址：http://www.qdfuns.com/notes/16738/1b6ad6125747d28592a53a960b44c6f4.html
+
+
+## 8.用过哪些跨域技术
+
+- window.postMessage
+- window.name
+- JSONP
+- Server-Proxy
+- document.domain
+- FIM
+- Flash
 
 ## 9.ajax的参数
 
+```
+
+
+$.ajax({  
+  
+        type: 'GET',    // 这是请求的方式 可以是GET方式也可以是POST方式, 默认是GET  
+  
+        url: ' xxx.php ',   // 这是请求的连接地址 一般情况下这个地址是后台给前端的一个连接，直接写就可以  
+  
+        dataType: 'json',  // 这是后台返回的数据类型 一般情况下都是一个json数据， 前端遍历一下就OK  
+  
+        async: true, // 默认为true，默认为true时，所有请求均为异步请求，如果需要发送同步请求，需设置为false,  
+  
+        timeout: 8000, // 设置请求超时时间（毫秒）。此设置将覆盖全局设置  
+  
+        data: {  
+                // 要传递的参数  
+  
+                'xxx' : 'xxx',  
+                  
+                ... ...   
+        },  
+  
+        beforeSend: function () {  
+  
+                // 在发送请求前就开始执行 （一般用来显示loading图）  
+  
+        }，  
+  
+        success: function (data) {  
+  
+                // 发送请求成功后开始执行，data是请求成功后，返回的数据  
+  
+        },  
+  
+        complete: function () {  
+  
+                //当请求完成后开始执行，无论成功或是失败都会执行 （一般用来隐藏loading图）  
+          
+        }，  
+  
+        error: function (xhr, textStatus, errorThrown) {  
+  
+                //  请求失败后就开始执行，请求超时后，在这里执行请求超时后要执行的函数  
+  
+        }  
+}).done(function () {  
+          
+        // 这个函数是在ajax数据加载完之后，对数据进行的判断，在涉及到对ajax数据进行操作无效时，在这个函数里面写是可以起到效果的  
+  
+}) 
+```
 
 # 前后端通信
 
 ## 1.什么是同源策略及限制?
 
-JavaScript出于安全方面的考虑，不允许跨域调用其他页面的对象
+概念:同源策略是客户端脚本（尤其是Javascript）的重要的安全度量标准。它最早出自Netscape Navigator2.0，其目的是防止某个文档或脚本从多个不同源装载。
 
-同源策略是由Netscape提出的著名安全策略，是浏览器最核心、基本的安全功能,它限制了一个源(origin)中加载文本或者脚本与来自其他源(origin)中资源的交互方式
-，所谓的同源就是指协议、域名、端口相同。
-当浏览器执行一个脚本时会检查是否同源，只有同源的脚本才会执行，如果不同源即为跨域
+这里的同源策略指的是：协议，域名，端口相同，同源策略是一种安全协议。
 
+指一段脚本只能读取来自同一来源的窗口和文档的属性。
+
+**为什么要有同源限制？**
+
+我们举例说明：比如一个黑客程序，他利用Iframe把真正的银行登录页面嵌到他的页面上，当你使用真实的用户名，密码登录时，他的页面就可以通过Javascript读取到你的表单中input中的内容，这样用户名，密码就轻松到手了。
+
+缺点：
+
+现在网站的JS 都会进行压缩，一些文件用了严格模式，而另一些没有。这时这些本来是严格模式的文件，被 merge 后，这个串就到了文件的中间，不仅没有指示严格模式，反而在压缩后浪费了字节。
 
 ## 2.前后端如何通信?
+
+
+
+
+
 
 
 ## 3.用原生JS模拟一下jquery的ajax方法
@@ -1134,12 +1506,41 @@ app.get('/beXhr',(req,res) => {
 # 安全
 
 ## 1.CSRF的原理以及如何防御
+
+CSRF（Cross-Site Request Forgeries，跨站点请求伪造）：指攻击者通过设置好的陷阱，强制对已完成的认证用户进行非预期的个人信息或设定信息等某些状态更新。
+
+**CSRF防御**
+
+- 通过 referer、token 或者 验证码 来检测用户提交。
+- 尽量不要在页面的链接中暴露用户隐私信息。
+- 对于用户修改删除等操作最好都使用post 操作 。
+- 避免全站通用的cookie，严格设置cookie的域。
+
+
 ## 2.XSS的原生和如何防御
 
+XSS（Cross-Site Scripting，跨站脚本攻击）：指通过存在安全漏洞的Web网站注册用户的浏览器内运行非法的HTML标签或者JavaScript进行的一种攻击。
+
+**XSS防范方法**
+首先代码里对用户输入的地方和变量都需要仔细检查长度和对”<”,”>”,”;”,”’”等字符做过滤；其次任何内容写到页面之前都必须加以encode，避免不小心把html tag 弄出来。这一个层面做好，至少可以堵住超过一半的XSS 攻击。
+
+首先，避免直接在cookie 中泄露用户隐私，例如email、密码等等。
+
+其次，通过使cookie 和系统ip 绑定来降低cookie 泄露后的危险。这样攻击者得到的cookie 没有实际价值，不可能拿来重放。
+
+如果网站不需要再浏览器端对cookie 进行操作，可以在Set-Cookie 末尾加上HttpOnly 来防止javascript 代码直接获取cookie 。
+
+尽量采用POST 而非GET 提交表单
 
 # 渲染机制
 
 ## 1.什么是DOCTYPE及作用?标准模式和兼容模式有什么区别?
+
+- <!DOCTYPE> 声明位于文档中的最前面，处于 <html> 标签之前。告知浏览器以何种模式来渲染文档。
+
+- 严格模式的排版和 JS 运作模式是以该浏览器支持的最高标准运行。在混杂模式中，页面以宽松的向后兼容的方式显示。模拟老式浏览器的行为以防止站点无法工作。
+
+
 ## 2.浏览器是如何渲染页面的?
 
 1.解析HTML文件，创建DOM树
@@ -1174,13 +1575,125 @@ DOM树与HTML一一对应，渲染树会忽略诸如head、display:none的元素
 # JS运行机制
 
 ## 1.如何理解JS的单线程
+JavaScript语言的一大特点就是单线程，也就是说，同一个时间只能做一件事。
+JavaScript的单线程，与它的用途有关。作为浏览器脚本语言，JavaScript的主要用途是与用户互动，以及操作DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器应该以哪个线程为准？
+
+
 ## 2.什么是Event Loop,请简述其过程
 
+Event Loop 指的是计算机系统的一种运行机制。JavaScript语言就采用这种机制，来解决单线程运行带来的一些问题。
+主线程从"任务队列"中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）。
+主线程运行的时候，产生堆（heap）和栈（stack），栈中的代码调用各种外部API，它们在"任务队列"中加入各种事件（click，load，done）。只要栈中的代码执行完毕，主线程就会去读取"任务队列"，依次执行那些事件所对应的回调函数。
 
 # 服务器
 
 ## 1.如何在web应用中在实现权限控制?
+
+- 前端控制：
+　　前端的控制比较简单，从后台获取到用户的权限之后，可以存在session或者cookie中，然后在页面加载的时候，通过session或者cookie中存的权限来选择让该功能展现或者禁用。
+
+- 后台控制：
+　　仅仅依靠前端的控制是无法完美解决权限控制的问题，因为前端页面的加载过程是在浏览器中完成的，用户可以自行篡改页面；或者用户可以直接通过URI请求来获取非法权限功能。所以需要在后台实现权限控制。
+
+　　后台的控制方法也很多，比如filter、spring的AOP等。在此选用springMVC的interceptor来控制。
+
+　　首先，在appContext-mvc.xml配置文件中配置拦截器，如下所示：
+  ```
+  <mvc:interceptors>
+    <!-- 会员功能 -->
+    <mvc:interceptor>  
+        <mvc:mapping path="/fund/mem/**" />
+        <bean class="org.fund.user.interceptor.AuthInterceptor" />  
+    </mvc:interceptor>
+</mvc:interceptors>  
+```
+其中，path表示需要控制的接口路径，可以使用正则表达式来匹配。
+
+　　然后，需要自己定义一个拦截器类，继承HandlerInterceptor接口，然后在preHandle方法里进行权限判断，如下所示：
+  ```
+  @Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    User user = UserHolder.getUser();
+    if (user.getAuth() == GameIdeaType.VIP_USER.getId()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+```
+此时，当用户访问接口时，会首先进入这个拦截器的preHandle方法去处理。若权限通过则返回true；否则返回false，此次访问结束。
+
+到此，已经实现了权限的控制，但是无法在用户访问非法权限接口时给出提示。若要解决这个问题，需要添加一个全局异常管理。
+
+- 全局异常管理：
+
+　　思路是在拦截器中权限校验失败时，抛出一个权限校验失败的异常，然后通过全局异常管理类来捕获并返回前端特定的格式。具体如下。
+
+首先，在配置文件中添加全局异常管理类，如下：
+
+```
+<!-- 全局异常管理 -->
+<bean id="handlerExceptionResolver" class="org.fund.common.ExceptionHandler">
+    <property name="order" value="0"></property>
+</bean>
+```
+然后，定义异常管理类，实现SimpleMappingExceptionResolver接口。
+```
+/**
+ * 全局异常处理类
+ * 
+ * @author 
+ */
+public class ExceptionHandler extends SimpleMappingExceptionResolver {
+
+    @Override
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object o, Exception e) {
+        logger.info("System Error Occurred. " + e.getMessage(), e);
+
+        ModelAndView model = new ModelAndView(new MappingJacksonJsonView());
+        List<String> errors = new ArrayList<String>();
+
+        if (e instanceof NoPermissionException) {
+            errors.add("抱歉，该功能开通会员之后才能使用！");
+        } else {
+            errors.add("系统异常");
+        }
+
+        return paramError(model, errors);
+    }
+
+    private ModelAndView paramError(ModelAndView mv, List<String> errors) {
+        mv.addObject("success", false);
+        mv.addObject("data", null);
+        mv.addObject("errors", errors);
+        return mv;
+    }
+
+}
+```
+最后，修改拦截器的实现
+```
+@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    User user = UserHolder.getUser();
+    if (user.getAuth() == GameIdeaType.VIP_USER.getId()) {
+        return true;
+    } else {
+        throw new NoPermissionException();
+    }
+}
+```
+
+
+
 ## 2.Web服务器、应用服务器、Web容器、反向代理服务器的区别和联系?
+
+Web服务器是指能够为发出请求的浏览器提供文档的程序。服务器是一种被动程序，只有浏览器发出请求的时候才会响应。应用层使用的是HTTP协议。目前最主流的三个Web服务器是Apache Nginx IIS。
+
+Web容器是一种服务器程序，在服务器端口就有一个提供相应服务的程序。所以现在知道为什么Tomcat有默认的端口——8080。一个服务器可以有多个容器。
+
+Web服务器设计服务于HTTP内容，应用服务器不只限于HTTP。Web服务器服务于静态内容，有插件支持动态语言，
+应用服务器也具有Web服务器的这些东西，除此它还支持程序级的服务，如连接池，事务支持，信息服务等。
 
 
 # 错误处理
@@ -1198,14 +1711,50 @@ DOM树与HTML一一对应，渲染树会忽略诸如head、display:none的元素
 
 ## 2.如何实现JS的异步加载? async和defer的区别是什么?
 
+defer和async、动态创建DOM方式（创建script，插入到DOM中，加载完毕后callBack）、按需异步载入js
 
+defer并行加载js文件，会按照页面上script标签的顺序执行 async并行加载js文件，下载完成立即执行，不会按照页面上script标签的顺序执行
 
 
 # 缓存
 
 ## 1.Expires和Cache-Control是如何工作的？
 
+对一个网站而言，CSS、JavaScript、图片等静态资源更新的频率都比较低，而这些文件又几乎是每次HTTP请求都需要的，如果将这些文件缓存在浏览器中，可以极好的改善性能。通过设置http头中的cache-control和expires的属性，可设定浏览器缓存，将静态内容设为永不过期，或者很长时间后才过期。
+
+Expires = 时间，HTTP 1.0 版本，缓存的载止时间，允许客户端在这个时间之前不去检查（发请求）
+max-age = 秒，HTTP 1.1版本，资源在本地缓存多少秒。
+如果max-age和Expires同时存在，则被Cache-Control的max-age覆盖。
+Expires 的一个缺点就是，返回的到期时间是服务器端的时间，这样存在一个问题，如果客户端的时间与服务器的时间相差很大，那么误差就很大，所以在HTTP 1.1版开始，使用Cache-Control: max-age=秒替代。
+Expires =max-age +   “每次下载时的当前的request时间”
+
 ## 2.Last-Modified和Etag是如何工作的？
+
+什么是”Last-Modified”?
+
+   在浏览器第一次请求某一个URL时，服务器端的返回状态会是200，内容是你请求的资源，同时有一个Last-Modified的属性标记此文件在服务期端最后被修改的时间，格式类似这样：`Last-Modified: Fri, 12 May 2006 18:53:33 GMT`
+   
+　　客户端第二次请求此URL时，根据 HTTP 协议的规定，浏览器会向服务器传送 If-Modified-Since 报头，询问该时间之后文件是否有被修改过：`If-Modified-Since: Fri, 12 May 2006 18:53:33 GMT`
+　　
+   如果服务器端的资源没有变化，则自动返回 HTTP 304 （Not Changed.）状态码，内容为空，这样就节省了传输数据量。当服务器端代码发生改变或者重启服务器时，则重新发出资源，返回和第一次请求时类似。从而保证不向客户端重复发出资源，也保证当服务器有变化时，客户端能够得到最新的资源。
+
+什么是”Etag”?
+
+　　HTTP 协议规格说明定义ETag为“被请求变量的实体值” （参见 —— 章节 14.19）。 另一种说法是，ETag是一个可以与Web资源关联的记号（token）。典型的Web资源可以一个Web页，但也可能是JSON或XML文档。服务器单独负责判断记号是什么及其含义，并在HTTP响应头中将其传送到客户端，以下是服务器端返回的格式：`ETag: "50b1c1d4f775c61:df3"`
+  
+　　客户端的查询更新格式是这样的：`If-None-Match: W/"50b1c1d4f775c61:df3"`
+  
+　　如果ETag没改变，则返回状态304然后不返回，这也和Last-Modified一样。本人测试Etag主要在断点下载时比较有用。
+
+**Last-Modified和Etags如何帮助提高性能?**
+
+last-Modified 和ETags请求的http报头一起使用，服务器首先产生 Last-Modified/Etag标记，服务器可在稍后使用它来判断页面是否已经被修改，来决定文件是否继续缓存
+过程如下:
+1. 客户端请求一个页面（A）。
+2. 服务器返回页面A，并在给A加上一个Last-Modified/ETag。
+3. 客户端展现该页面，并将页面连同Last-Modified/ETag一起缓存。
+4. 客户再次请求页面A，并将上次请求时服务器返回的Last-Modified/ETag一起传递给服务器。
+5. 服务器检查该Last-Modified或ETag，并判断出该页面自上次客户端请求之后还未被修改，直接返回响应304和一个空的响应体。
 
 ## 3.请描述cookie、sessionStorage和localStorage的区别
 
