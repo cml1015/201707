@@ -1206,9 +1206,11 @@ HTTP报文分为请求报文(request message)与响应报文(response message)�
    * GET以查询字符串的形式拼接到URL问号后边，？=mime类型&rvs_spt=1
    * URL是有长度限制的俄，chrome 8kb，ie 2bk
    * POST将发送给后台的数据放到请求体里面，没有大小限制
+   
 2.安全问题 MD5加密
    * GET 不安全，拼接到URL后边 容易被劫持
    * POST 在请求体里
+   
 3.缓存问题
    * get有缓存  在？后拼接随机数或时间戳
    https://www.baidu.com/_=Math.random
