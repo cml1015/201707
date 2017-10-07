@@ -963,7 +963,7 @@ $( "#members" ).delegate( "li a", "click", function( e ) {} );
 
 ## 1.什么时候应该用箭头函数？什么时候不能用？ － 请写出ES6中Array.isArray()的实现代码
 
-
+https://zhuanlan.zhihu.com/p/26540168
 
 ## 2.如何在项目中解析处理es6和es7代码
 
