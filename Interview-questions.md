@@ -630,6 +630,19 @@ btn.addEventListener("click",function(){
 
 ### 17.对于js中浮点数计算会丢失精度的问题，你有什么解决思路？
 
+### 18.JavaScript 中 this 的工作原理
+1.在函数中，this通常是一个隐含的参数
+2.在函数外（顶级作用域中），在浏览器中this指向的是全局对象；在NodeJs中this指向的是导出（module）的模块（export）
+3.传递到eval()中的字符串：如果eval()是被直接调用的，this指向的是当前对象，如果eval()是被间接调用的，this指向的是全局对象
+
+### 19.call和apply的作用是什么？区别是什么？
+- call和apply的功能基本相同，都是实现继承或者转换对象指针的作用；
+- 唯一不同的是前者参数是罗列出来的，后者是存到数组中的；
+- call或apply功能就是实现继承的；与面向对象的继承extends功能相似；但写法不同；
+- 语法：
+.call(对象[,参数1，参数2,....]);//此地参数是指的是对象的参数，非方法的参数；
+.apply(对象,参数数组)//参数数组的形式:[参数1，参数2,......]
+
 # JQuery
 
 ## jquery.extend , jquery.fn.extend的区别
